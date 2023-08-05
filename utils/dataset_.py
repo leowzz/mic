@@ -8,6 +8,7 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 
+
 def get_data_names():
     files = os.listdir('./data')
     print(files)
@@ -79,8 +80,9 @@ def read_data(filepath):
                     count_ = 0
                     break
         i += 1
-
-    res = [_[:60] for _ in res if 60 < len(_) < 120]
+    print(filepath, len(res))
+    print([len(i) for i in res])
+    # res = [_[:60] for _ in res if 60 < len(_) < 120]
 
     return res
 
@@ -89,7 +91,12 @@ if __name__ == '__main__':
     ...
     # print(get_data_names())
     # 处理错误值
-    deal_1()
+    # deal_1()
 
     # main('001.csv')
     # print(pd.read_csv('01_1b22.csv'))
+
+    DATASET_BASE = '../dataset'
+    csv_files = [_ for _ in os.listdir(DATASET_BASE) if _.endswith('.csv')]
+    for c in csv_files:
+        read_data(os.path.join(DATASET_BASE, c))
