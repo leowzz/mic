@@ -81,10 +81,10 @@ if __name__ == '__main__':
     # deal_1('./data', os.listdir('data'), './dataset')
     # exit(1)
 
-    batch_size = 3
-    learning_rate = 0.0001
+    batch_size = 32
+    learning_rate = 0.005
     momentum = 0.6
-    epoch = 180
+    epoch = 230
     dataset = load_dataset()
     train_, test_ = split_dataset(dataset, batch_size)
     begin(train_, learning_rate, momentum, epoch)
