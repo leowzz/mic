@@ -39,6 +39,8 @@ import os
 def deal_1(base_dir, filenames, output_dir):
     # 处理最后一行的脏值
     for file_name in filenames:
+        if not file_name.endswith('.csv'):
+            continue
         print(file_name)
         target = int(file_name[:2])
         print(target, file_name)

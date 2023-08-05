@@ -73,6 +73,8 @@ def load_dataset():
 
 
 if __name__ == '__main__':
+    deal_1('./data', os.listdir('data'), './dataset')
+    exit(1)
     ...
     batch_size = 4
     learning_rate = 0.0001
@@ -82,7 +84,6 @@ if __name__ == '__main__':
     train_, test_ = split_dataset(dataset, batch_size)
     begin(train_, learning_rate, momentum, epoch)
 
-    # deal_1('./data', os.listdir('data'), './dataset')
 
     # data = read_data('./dataset/001.csv')
     # dataset = CustomDataset(1, data)

@@ -101,7 +101,21 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\dataset\022.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\dataset\02_084c.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\dataset\036.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
