@@ -31,7 +31,7 @@ def begin(train_loader):
     hidden_size = 16  # 隐藏层大小，可根据需求调整
     output_size = 1  # 输出大小，即传感器状态
     # model = VoltageSensorModel(input_size, hidden_size, output_size)
-    model = Tudui(4000,100,32,[3, 4, 5],36,0.5)
+    model = Tudui(4000, 100, 32, [3, 4, 5], 36, 0.5)
     # 定义损失函数和优化器
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)

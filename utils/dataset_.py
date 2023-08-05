@@ -80,7 +80,7 @@ def read_data(filepath):
                     break
         i += 1
 
-    res = [_ for _ in res if 50 < len(_) < 120]
+    res = [_[:60] for _ in res if 60 < len(_) < 120]
 
     return res
 
