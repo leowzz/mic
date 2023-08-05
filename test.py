@@ -43,8 +43,11 @@ def get_bang(data):
                     count_ += 1
                 if count_ > 15:
                     # 太多正常值了, 说明这段音频结束了
-                    return audio
+                    if 60 < len(audio) < 120:
+                        model_test(audio[:60])
+                    return True
         i += 1
+    return False
 
 
 # Wait a second to let the port initialize
@@ -70,7 +73,7 @@ def get_ser_info(n, w=None):
                     item = list(map(int, item_list))
                     res.append(item)
                     if count_ % 1000 == 0:
-                        model_test(get_audio(res))
+                        get_audio(res)
                         res = []
                 # except UnicodeDecodeError or ValueError as e:
                 except Exception as e:
