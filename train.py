@@ -21,8 +21,8 @@ def train(model, optimizer, criterion, train_loader):
         loss.backward()
         optimizer.step()
 
-        if batch_idx % 100 == 0:
-            print(f'Batch: {batch_idx + 1}/{len(train_loader)}, Loss: {loss.item()}')
+        if batch_idx % 56 == 0:
+            print(f'Loss: {loss.item()}')
 
 
 def begin(train_loader, learning_rate=0.001, momentum=0.9, epoch=10):
@@ -42,7 +42,7 @@ def begin(train_loader, learning_rate=0.001, momentum=0.9, epoch=10):
         print(f'Epoch: {epoch + 1}')
         train(model, optimizer, criterion, train_loader)
         print('---------------------------')
-        torch.save(tudui, f"models/{filename}.pth")
+        torch.save(model, f"models/{filename}.pth")
 
 
 from utils.util import timeit
@@ -50,6 +50,7 @@ from utils.util import timeit
 
 @timeit
 def load_dataset():
+    # my = []
     _dataset = CustomDataset()
     DATASET_BASE = './dataset'
     csv_files = [_ for _ in os.listdir(DATASET_BASE) if _.endswith('.csv')]
@@ -58,20 +59,23 @@ def load_dataset():
         print(csv_file, target)
         audios = read_data(os.path.join(DATASET_BASE, csv_file))
         _dataset.add_dateset([target] * len(audios), audios)
+        # my.append([target, len(audios)] )
+    # print(my)
+    # exit(1)
     return _dataset
 
 
 if __name__ == '__main__':
     ...
-    # batch_size = 4
-    # learning_rate = 0.0001
-    # momentum = 0.6
-    # epoch = 180
-    # dataset = load_dataset()
-    # train_, test_ = split_dataset(dataset, batch_size)
-    # begin(train_, learning_rate, momentum, epoch)
+    batch_size = 4
+    learning_rate = 0.0001
+    momentum = 0.6
+    epoch = 180
+    dataset = load_dataset()
+    train_, test_ = split_dataset(dataset, batch_size)
+    begin(train_, learning_rate, momentum, epoch)
 
-    deal_1('./data', os.listdir('data'), './dataset')
+    # deal_1('./data', os.listdir('data'), './dataset')
 
     # data = read_data('./dataset/001.csv')
     # dataset = CustomDataset(1, data)
