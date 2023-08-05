@@ -3,14 +3,15 @@
 # @author LeoWang
 # @date 2023/8/6
 import time
+import os
 from rich.progress import track
 import torch
 import numpy as np
 
 print('began load models')
+model = torch.load('./models/2023-08-06_015426.pth')
 # model = torch.load('./models/2023-08-06_015426.pth')
-# model = torch.load('./models/2023-08-06_015426.pth')
-model = torch.load('./models/2023-08-06_023408.pth')
+# model = torch.load('./models/2023-08-06_023408.pth')
 model.eval()
 print('finish load models')
 
@@ -25,8 +26,7 @@ def model_test(audio):
         # print(output)
 
         _, predicted = torch.max(output, 1)  # 取得分最高的类别
-        predicted_label = predicted.item()
-        print(predicted_label)
+        return predicted.item()
 
         # value = output.view(-1).tolist()
         # i = value.index(max(value))
@@ -42,9 +42,13 @@ def model_test(audio):
 
 
 from utils.dataset_ import read_data
+# 取众数
+from collections import Counter
 
-data = read_data('./dataset/014.csv')
-# print(data[22])
-# print(model_test(data[10]))
-for i in data:
-    model_test(i)
+DATASET_BASE = './dataset'
+csv_files = [_ for _ in os.listdir(DATASET_BASE) if _.endswith('.csv')]
+for c in csv_files:
+    data = read_data(os.path.join(DATASET_BASE, c))
+    res = [model_test(i) for i in data]
+    res = Counter(res).most_common(1)[0][0]
+    print(c, res)
