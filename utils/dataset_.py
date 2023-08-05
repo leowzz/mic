@@ -26,8 +26,8 @@ def split_dataset(dataset):
 
     # 定义训练集和测试集的数据加载器
     batch_size = 32
-    train_loader = DataLoader(dataset=train_data, batch_size=batch_size, shuffle=True)
-    test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=True)
+    train_loader = DataLoader(dataset=train_data, batch_size=batch_size)
+    test_loader = DataLoader(test_data, batch_size=batch_size)
     return train_loader, test_loader
 
 

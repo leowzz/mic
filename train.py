@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
-from meta import CustomDataset, Model
+from meta import CustomDataset, Model, MyModel, VoltageSensorModel, Tudui
 from utils.dataset_ import get_data_names, split_dataset, deal_1, read_data
 
 
@@ -27,8 +27,11 @@ def train(model, optimizer, criterion, train_loader):
 
 def begin(train_loader):
     # 创建模型实例
-    model = Model()
-
+    input_size = 3  # 输入大小，即传感器数量
+    hidden_size = 16  # 隐藏层大小，可根据需求调整
+    output_size = 1  # 输出大小，即传感器状态
+    # model = VoltageSensorModel(input_size, hidden_size, output_size)
+    model = Tudui(4000,100,32,[3, 4, 5],36,0.5)
     # 定义损失函数和优化器
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
@@ -48,7 +51,7 @@ def load_dataset():
     _dataset = CustomDataset()
     DATASET_BASE = './dataset'
     csv_files = [_ for _ in os.listdir(DATASET_BASE) if _.endswith('.csv')]
-    for csv_file in csv_files:
+    for csv_file in csv_files[:2]:
         target = int(csv_file[:3])
         print(csv_file, target)
         audios = read_data(os.path.join(DATASET_BASE, csv_file))
@@ -59,8 +62,8 @@ def load_dataset():
 if __name__ == '__main__':
     ...
     dataset = load_dataset()
-    train, test = split_dataset(dataset)
-    begin(train)
+    train_, test_ = split_dataset(dataset)
+    begin(train_)
 
     # deal_1('./data', os.listdir('data'), './dataset')
 
