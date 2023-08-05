@@ -23,8 +23,6 @@ def model_test(audio):
 
     with torch.no_grad():
         output = model(audio)
-        # print(output)
-
         _, predicted = torch.max(output, 1)  # 取得分最高的类别
         return predicted.item()
 

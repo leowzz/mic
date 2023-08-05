@@ -10,6 +10,18 @@ from torch.utils.data import Dataset, DataLoader
 from meta import CustomDataset, Model, MyModel, VoltageSensorModel, Tudui
 from utils.dataset_ import get_data_names, split_dataset, deal_1, read_data
 from utils.util import get_now, get_uuid
+import numpy as np
+
+model = Tudui(4000, 50, 32, [3, 4, 5], 37, 0.5)
+
+def model_test(audio):
+    audio = np.array(audio).flatten()
+    audio = torch.tensor(audio)
+
+    with torch.no_grad():
+        output = model(audio)
+        _, predicted = torch.max(output, 1)  # 取得分最高的类别
+        return predicted.item()
 
 
 def train(model, optimizer, criterion, train_loader):
@@ -38,12 +50,11 @@ def begin(train_loader, learning_rate=0.001, momentum=0.9, epoch=10):
     output_size = 1  # 输出大小，即传感器状态
 
     # files = os.listdir('./models')
-    files = None
+    files = 1
     if files:
-        model_path = f"./models/{sorted(files)[-1]}"
+        # model_path = f"./models/{sorted(files)[-1]}"
+        model_path = f"./models/2023-08-06_015426.pth"
         model = torch.load(model_path)
-    else:
-        model = Tudui(4000, 50, 32, [3, 4, 5], 37, 0.5)
 
     # 定义损失函数和优化器
     criterion = nn.CrossEntropyLoss()
@@ -88,10 +99,13 @@ if __name__ == '__main__':
     learning_rate = 0.01
     momentum = 0.7
     epoch = 20
-    dataset = load_dataset(start=0, end=36)
+    dataset = load_dataset(start=0, end=3)
     train_, test_ = split_dataset(dataset, batch_size)
     begin(train_, learning_rate, momentum, epoch)
 
+    # for i in test_:
+    #     print(i)
+    #     print(i[0], model_test(i[0][0))
 
     # data = read_data('./dataset/001.csv')
     # dataset = CustomDataset(1, data)

@@ -3,7 +3,8 @@ import time
 from rich.progress import track
 import torch
 import numpy as np
-
+from collections import Counter
+from utils.util import  translate
 se = ser.Serial(
     '/dev/ttyTHS0', 115200,
     bytesize=ser.EIGHTBITS,
@@ -12,7 +13,6 @@ se = ser.Serial(
 )
 
 print('begian load models')
-# model = torch.load('./models/2023-08-06_015426.pth')
 model = torch.load('./models/2023-08-06_015426.pth')
 model.eval()
 print('finish load models')
@@ -20,11 +20,13 @@ print('finish load models')
 
 def model_test(audio):
     audio = np.array(audio).flatten()
-    audio = np.transpose(audio)
+    # print(audio.shape)
     audio = torch.tensor(audio)
+
     with torch.no_grad():
         output = model(audio)
-        print("你敲了: ", output)
+        _, predicted = torch.max(output, 1)  # 取得分最高的类别
+        return predicted.item()
 
 
 def get_audio(data, f):
@@ -50,7 +52,14 @@ def get_audio(data, f):
                     # 太多正常值了, 说明这段音频结束了
                     if 60 < len(audio) < 120:
                         res_ = model_test(audio[:60])
-                        print(res_)
+                        print(translate(res_))
+                        # value = res_.view(-1).tolist()
+                        # i = value.index(max(value))
+                        # print(i)
+
+                        # _, predicted = torch.max(res_, 1)
+                        # print(predicted.item())
+
                         f.write(str(res_))
                     return True
         i += 1
@@ -65,10 +74,10 @@ def get_ser_info(n, w=None):
     print("wait data")
     count_ = 0
     for i in track(range(n)):
-        if i % 500 == 0:
-            print(i)
-            if item:
-                print(item)
+        # if i % 500 == 0:
+        #     print(i)
+        #     if item:
+        #         print(item)
         if se.inWaiting() > 0:
             data = se.readline()
             if i > 2:
@@ -115,7 +124,8 @@ def main(f):
     print(get_ser_info(100)[50:80])
     print(get_ser_info(100)[50:80])
     # 10000 5秒
-    datas = get_ser_info(100000, f)
+    datas = get_ser_info(10000000, f)
+
     if len(datas) == 0:
         print('break')
     se.flushInput()
@@ -128,7 +138,7 @@ if __name__ == "__main__":
     f = open(f'./log/{get_now()}_{get_uuid()}.log', 'w')
     try:
         main(f)
-    except UnicodeDecodeError as e:
+    except Exception as e:
         print(e)
     finally:
         f.close()
