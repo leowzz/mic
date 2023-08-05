@@ -25,17 +25,7 @@ def train(model, optimizer, criterion, train_loader):
             print(f'Batch: {batch_idx + 1}/{len(train_loader)}, Loss: {loss.item()}')
 
 
-def main():
-    # 假设已经准备好了训练数据和标签数据
-    train_data = ...
-    train_labels = ...
-
-    # 创建数据集实例
-    train_dataset = CustomDataset(train_data, train_labels)
-
-    # 创建数据加载器
-    train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
-
+def begin(train_loader):
     # 创建模型实例
     model = Model()
 
@@ -69,7 +59,8 @@ def load_dataset():
 if __name__ == '__main__':
     ...
     dataset = load_dataset()
-    split_dataset(dataset)
+    train, test = split_dataset(dataset)
+    begin(train)
 
     # deal_1('./data', os.listdir('data'), './dataset')
 

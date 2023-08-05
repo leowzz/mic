@@ -6,7 +6,7 @@ import os
 import pandas as pd
 import numpy as np
 import torch
-
+from torch.utils.data import Dataset, DataLoader, TensorDataset
 
 def get_data_names():
     files = os.listdir('./data')
@@ -16,21 +16,19 @@ def get_data_names():
     }
 
 
-def split(dataset):
+def split_dataset(dataset):
     # 划分训练集和测试集
     train_ratio = 0.8  # 训练集占比
     n = len(dataset)
     train_size = int(train_ratio * n)
     test_size = n - train_size
-    train_data, test_data = torch.utils.data.random_split(values, [train_size, test_size])
-    train_target, test_target = torch.utils.data.random_split(keys, [train_size, test_size])
-
-    print(train_data.shape, train_target.shape)
+    train_data, test_data = torch.utils.data.random_split(dataset, [train_size, test_size])
 
     # 定义训练集和测试集的数据加载器
     batch_size = 32
-    train_loader = DataLoader(TensorDataset(train_data, train_target), batch_size=batch_size, shuffle=True)
-    test_loader = DataLoader(TensorDataset(test_data, test_target), batch_size=batch_size, shuffle=False)
+    train_loader = DataLoader(dataset=train_data, batch_size=batch_size, shuffle=True)
+    test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=True)
+    return train_loader, test_loader
 
 
 import csv
