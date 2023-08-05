@@ -16,7 +16,7 @@ def get_data_names():
     }
 
 
-def split_dataset(dataset):
+def split_dataset(dataset, batch_size):
     # 划分训练集和测试集
     train_ratio = 0.8  # 训练集占比
     n = len(dataset)
@@ -25,7 +25,7 @@ def split_dataset(dataset):
     train_data, test_data = torch.utils.data.random_split(dataset, [train_size, test_size])
 
     # 定义训练集和测试集的数据加载器
-    batch_size = 32
+    # batch_size = 32
     train_loader = DataLoader(dataset=train_data, batch_size=batch_size)
     test_loader = DataLoader(test_data, batch_size=batch_size)
     return train_loader, test_loader
@@ -89,7 +89,7 @@ if __name__ == '__main__':
     ...
     # print(get_data_names())
     # 处理错误值
-    # deal_1()
+    deal_1()
 
     # main('001.csv')
     # print(pd.read_csv('01_1b22.csv'))

@@ -9,7 +9,7 @@ import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 from meta import CustomDataset, Model, MyModel, VoltageSensorModel, Tudui
 from utils.dataset_ import get_data_names, split_dataset, deal_1, read_data
-
+from utils.util import get_now, get_uuid
 
 def train(model, optimizer, criterion, train_loader):
     model.train()
@@ -25,7 +25,8 @@ def train(model, optimizer, criterion, train_loader):
             print(f'Batch: {batch_idx + 1}/{len(train_loader)}, Loss: {loss.item()}')
 
 
-def begin(train_loader):
+def begin(train_loader, learning_rate=0.001, momentum=0.9, epoch=10):
+    filename = f"{get_now()}{get_uuid()}"
     # 创建模型实例
     input_size = 3  # 输入大小，即传感器数量
     hidden_size = 16  # 隐藏层大小，可根据需求调整
@@ -34,13 +35,14 @@ def begin(train_loader):
     model = Tudui(4000, 100, 32, [3, 4, 5], 36, 0.5)
     # 定义损失函数和优化器
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
+    optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=momentum)
 
     # 开始训练
-    for epoch in range(10):
+    for epoch in range(epoch):
         print(f'Epoch: {epoch + 1}')
         train(model, optimizer, criterion, train_loader)
         print('---------------------------')
+        torch.save(tudui, f"models/{filename}.pth")
 
 
 from utils.util import timeit
@@ -61,11 +63,15 @@ def load_dataset():
 
 if __name__ == '__main__':
     ...
-    dataset = load_dataset()
-    train_, test_ = split_dataset(dataset)
-    begin(train_)
+    # batch_size = 4
+    # learning_rate = 0.0001
+    # momentum = 0.6
+    # epoch = 180
+    # dataset = load_dataset()
+    # train_, test_ = split_dataset(dataset, batch_size)
+    # begin(train_, learning_rate, momentum, epoch)
 
-    # deal_1('./data', os.listdir('data'), './dataset')
+    deal_1('./data', os.listdir('data'), './dataset')
 
     # data = read_data('./dataset/001.csv')
     # dataset = CustomDataset(1, data)
