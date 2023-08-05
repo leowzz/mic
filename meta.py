@@ -8,12 +8,14 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 
+
 class CustomDataset(Dataset):
     target = []
     data = []
-    def __init__(self, target, data):
-        self.target = target
-        self.data = data
+
+    def add_dateset(self, target, data):
+        self.target.extend(target)
+        self.data.extend(data)
 
     def __len__(self):
         return len(self.data)

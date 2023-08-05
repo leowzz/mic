@@ -8,7 +8,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 from meta import CustomDataset, Model
-from utils.dataset_ import get_data_names, split, deal_1, read_data, test_split
+from utils.dataset_ import get_data_names, split_dataset, deal_1, read_data
 
 
 def train(model, optimizer, criterion, train_loader):
@@ -55,22 +55,22 @@ from utils.util import timeit
 
 @timeit
 def load_dataset():
-    dataset_lists = []
-    dataset = CustomDataset()
+    _dataset = CustomDataset()
     DATASET_BASE = './dataset'
     csv_files = [_ for _ in os.listdir(DATASET_BASE) if _.endswith('.csv')]
     for csv_file in csv_files:
         target = int(csv_file[:3])
         print(csv_file, target)
         audios = read_data(os.path.join(DATASET_BASE, csv_file))
-        _dataset = CustomDataset(target, audios)
-        dataset_lists.extend(_dataset)
-    return dataset_lists
+        _dataset.add_dateset([target] * len(audios), audios)
+    return _dataset
 
 
 if __name__ == '__main__':
     ...
-    load_dataset()
+    dataset = load_dataset()
+    split_dataset(dataset)
+
     # deal_1('./data', os.listdir('data'), './dataset')
 
     # data = read_data('./dataset/001.csv')

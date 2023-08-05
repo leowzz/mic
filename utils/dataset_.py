@@ -15,21 +15,11 @@ def get_data_names():
         int(_[:2]): f"data/{_}" for _ in files if _.endswith('.csv')
     }
 
-def test_split(dataset):
+
+def split(dataset):
     # 划分训练集和测试集
     train_ratio = 0.8  # 训练集占比
     n = len(dataset)
-    train_size = int(train_ratio * n)
-    test_size = n - train_size
-    train_data, test_data = torch.utils.data.random_split(dataset, [train_size, test_size])
-    print(f"{train_data=}")
-    print(f"{test_data=}")
-
-def split(keys, values):
-    from torch.utils.data import TensorDataset, DataLoader
-
-    # 划分训练集和测试集
-    train_ratio = 0.8  # 训练集占比
     train_size = int(train_ratio * n)
     test_size = n - train_size
     train_data, test_data = torch.utils.data.random_split(values, [train_size, test_size])
