@@ -33,7 +33,7 @@ class CustomDataset(Dataset):
     def __getitem__(self, idx):
         x = self.data[idx]
         y = self.target[idx]
-        x = np.array(x)
+        x = np.array(x).flatten()
         # x = np.transpose(x)
         x = torch.tensor(x)
         # y = torch.tensor(y)
