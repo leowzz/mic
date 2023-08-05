@@ -9,10 +9,10 @@ import torch
 
 
 def get_data_names():
-    files = os.listdir('.')
-    csv_files = [_ for _ in files if _.endswith('.csv')]
+    files = os.listdir('./data')
+    print(files)
     return {
-        int(file_name[:2]): file_name for file_name in csv_files
+        int(_[:2]): f"data/{_}" for _ in files if _.endswith('.csv')
     }
 
 
@@ -38,22 +38,52 @@ def deal_1():
     # 处理最后的脏值
     import csv
     for target, file_name in get_data_names().items():
-        if target == 11:
-            print(target, file_name)
-            data = []
-            with open(file_name, 'r+') as f:
-                # print(len(f.readlines()))
-                data.extend(f.readlines())
-                print(data)
-                with open('out.csv', 'w') as f:
-                    writer = csv.writer(f)
-                    for i in data:
-                        writer.writerow(i)
+        print(target, file_name)
+        data = []
+        with open(file_name, 'r+', encoding='utf-8') as f:
+            # print(len(f.readlines()))
+            data.extend(f.readlines())
+            with open(f'{target:03d}.csv', 'w') as f1:
+                for i in data[:-1]:
+                    f1.write(i)
+
+
+def main(filepath):
+    data = pd.read_csv(filepath)
+    # 结果值
+    res = []
+    # 每段音频
+    item = []
+    # 计数器, 用来判断是否结束取值
+    count_ = 0
+    i = 0
+    # 假如数据在范围内开始取值 存到item 里面, 直到连续的5个数据不在范围内, 就将item存到res里面
+    # 重复上面的步骤, 直到数据取完
+    while i < len(data.values):
+        line = data.values[i]
+        if min(line) < 800 or max(line) > 2000:
+            while i < len(data.values):
+                line = data.values[i]
+                if min(line) < 800 or max(line) > 2000:
+                    item.append(line.tolist())
+                    i += 1
+                else:
+                    count_ += 1
+                if count_ > 5:
+                    res.append(item)
+                    item = []
+                    count_ = 0
+                    break
+        i += 1
+
+    res = [_ for _ in res if 50 < len(_) < 120]
+    print(res[0])
+
 
 if __name__ == '__main__':
     # print(get_data_names())
+    # 处理错误值
+    # deal_1()
 
-    deal_1()
-    from loguru import logger
-
+    main('001.csv')
     # print(pd.read_csv('01_1b22.csv'))

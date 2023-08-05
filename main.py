@@ -56,7 +56,6 @@ hex(ord("("))
 """
 import csv
 def main(f):
-    
     csv_writer = csv.writer(f)
     se.flushInput()
     time.sleep(1)
@@ -67,7 +66,6 @@ def main(f):
     datas = get_ser_info(200000, csv_writer)
     if len(datas) == 0:
         print('break')
-    f.write(str(datas))
     se.flushInput()
     print('完事了, 歇一会')
 
