@@ -76,15 +76,14 @@ def read_data(filepath):
                     i += 1
                 else:
                     count_ += 1
-                if count_ > 5:
+                if count_ > 15:
                     res.append(item)
                     item = []
                     count_ = 0
                     break
         i += 1
+    res = [_[:60] for _ in res if 60 < len(_) < 120]
     print(filepath, len(res))
-    print([len(i) for i in res])
-    # res = [_[:60] for _ in res if 60 < len(_) < 120]
 
     return res
 
