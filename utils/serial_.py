@@ -9,18 +9,22 @@ time.sleep(.5)
 def get_ser_info():
     res = []
     print("wait data")
+    temp = []
     # while 1:
-    for i in range(20000):
+    for i in range(1000):
         if se.inWaiting() > 0:
             data = se.readline()
-            data_str = str(data)
-            if '\\xb' in data_str:
-                data_str = data_str[2:-3].replace('\\xb', '')
-            data_list = data.decode('ascii')[:-1].split(',')
-            res.append(data_list)
+            temp.append(data)
+    print('read over')
+    for data in temp[1:]:
+        try :
+            item = list(map(int, data.decode('ascii')[:-1].split(',')))
+        except UnicodeDecodeError:
+            continue
+        res.append(item)
     # 清空串口缓存
     se.flushInput()
-    return res[1:]
+    return res
 
 import uuid
 import datetime
@@ -38,15 +42,41 @@ hex(ord("("))
 
 if __name__ == "__main__":
     f = open(f'./data/rec{get_now()}_{get_uuid()}.txt', 'a')
+    se.flushInput()
+    time.sleep(.2)
+    
     try:
-        se.flushInput()
         while 1:
             datas = get_ser_info()
+            if len(datas) == 0:
+                continue
+            max_ = [
+                max(datas, key=lambda x: x[i]) for i in range(3)
+            ]
+            for i in max_:
+                print(i)
+            print()
+            
+            min_ = [
+                min(datas, key=lambda x: x[i]) for i in range(3)
+            ]
+            
+            for i in min_:
+                print(i)
+            print('\n')
+            # print([i[0] for i in sort_])
+            indexs = [datas.index(i) for i in max_]
+            print(indexs)
+            indexs = [datas.index(i) for i in min_]
+            print(indexs)
+            
             f.write(str(datas))
-            print(datas)
+            se.flushInput()
+            # print(datas)
             input('请按任意键')
     
     finally:
         f.close()
+        se.flushInput()
         se.close()
     
