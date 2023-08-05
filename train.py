@@ -23,7 +23,7 @@ def train(model, optimizer, criterion, train_loader):
             loss.backward()
             optimizer.step()
 
-            if batch_idx % 100 == 0:
+            if batch_idx % 300 == 0:
                 print(f'Loss: {loss.item()}')
     except RuntimeError as e:
         print(e)
