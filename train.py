@@ -56,22 +56,25 @@ def begin(train_loader, learning_rate=0.001, momentum=0.9, epoch=10):
         print('---------------------------')
         torch.save(model, f"models/{filename}.pth")
 
+    print("Done!", filename)
+
 
 from utils.util import timeit
 
 
 @timeit
-def load_dataset():
+def load_dataset(start, end):
     # my = []
     _dataset = CustomDataset()
     DATASET_BASE = './dataset'
     csv_files = [_ for _ in os.listdir(DATASET_BASE) if _.endswith('.csv')]
-    for csv_file in csv_files[:]:
+    for csv_file in csv_files[start:end]:
         target = int(csv_file[:3])
         print(csv_file, target)
         audios = read_data(os.path.join(DATASET_BASE, csv_file))
         _dataset.add_dateset([target] * len(audios), audios)
         # my.append([target, len(audios)] )
+    _dataset.to_tensor()
     # print(my)
     # exit(1)
     return _dataset
@@ -84,8 +87,8 @@ if __name__ == '__main__':
     batch_size = 16
     learning_rate = 0.01
     momentum = 0.7
-    epoch = 280
-    dataset = load_dataset()
+    epoch = 20
+    dataset = load_dataset(start=0, end=36)
     train_, test_ = split_dataset(dataset, batch_size)
     begin(train_, learning_rate, momentum, epoch)
 

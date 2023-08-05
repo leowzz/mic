@@ -19,24 +19,24 @@ class CustomDataset(Dataset):
         self.target.extend(target)
         self.data.extend(data)
 
-    # def to_tensor(self):
-    #     self.new_data = []
-    #     for i in self.data:
-    #         item = np.array(i, dtype=np.float32)
-    #         item = torch.tensor(item)
-    #         self.new_data.append(item)
-    #     self.data = self.new_data
-    #     self.target
+    def to_tensor(self):
+        self.new_data = []
+        for i in self.data:
+            x = np.array(i).flatten()
+            x = torch.tensor(x)
+            self.new_data.append(x)
+        self.data = self.new_data
+
     def __len__(self):
         return len(self.data)
 
     def __getitem__(self, idx):
         x = self.data[idx]
         y = self.target[idx]
-        x = np.array(x).flatten()
-        x = np.transpose(x)
-        x = torch.tensor(x)
-        y = torch.tensor(y)
+        # x = np.array(x).flatten()
+        # x = np.transpose(x)
+        # x = torch.tensor(x)
+        # y = torch.tensor(y)
         return x, y
 
 
@@ -55,6 +55,7 @@ class Tudui(nn.Module):
 
     def forward(self, text):
         embedded = self.embedding(text)
+        embedded = embedded.unsqueeze(0)
         embedded = embedded.permute(0, 2, 1)  # Permute to match Conv1d input shape (batch_size, embedding_dim, seq_len)
         conved = [nn.functional.relu(conv(embedded)) for conv in self.convs]
         pooled = [nn.functional.max_pool1d(conv, conv.shape[2]).squeeze(2) for conv in conved]

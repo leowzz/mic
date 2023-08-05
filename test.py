@@ -1,6 +1,8 @@
 import serial as ser
 import time
 from rich.progress import track
+import torch
+import numpy as np
 
 se = ser.Serial(
     '/dev/ttyTHS0', 115200,
@@ -9,8 +11,11 @@ se = ser.Serial(
     stopbits=ser.STOPBITS_ONE,
 )
 
-model = torch.load('./2021-08-03_140318.pth')
+print('begian load models')
+# model = torch.load('./models/2023-08-06_015426.pth')
+model = torch.load('./models/2023-08-06_015426.pth')
 model.eval()
+print('finish load models')
 
 
 def model_test(audio):
@@ -22,7 +27,7 @@ def model_test(audio):
         print("你敲了: ", output)
 
 
-def get_bang(data):
+def get_audio(data, f):
     # 每段音频
     audio = []
     # 计数器, 用来判断是否结束取值
@@ -37,14 +42,16 @@ def get_bang(data):
                 line = data[i]
                 if min(line) < 800 or max(line) > 2000:
                     # 来, 存之
-                    audio.append(line.tolist())
+                    audio.append(line)
                     i += 1
                 else:
                     count_ += 1
                 if count_ > 15:
                     # 太多正常值了, 说明这段音频结束了
                     if 60 < len(audio) < 120:
-                        model_test(audio[:60])
+                        res_ = model_test(audio[:60])
+                        print(res_)
+                        f.write(str(res_))
                     return True
         i += 1
     return False
@@ -73,10 +80,10 @@ def get_ser_info(n, w=None):
                     item = list(map(int, item_list))
                     res.append(item)
                     if count_ % 1000 == 0:
-                        get_audio(res)
+                        get_audio(res, w)
                         res = []
                 # except UnicodeDecodeError or ValueError as e:
-                except Exception as e:
+                except UnicodeDecodeError as e:
                     print(e)
                     continue
     return res
@@ -101,7 +108,6 @@ import csv
 
 
 def main(f):
-    csv_writer = csv.writer(f)
     time.sleep(.1)
     se.flushInput()
     time.sleep(.1)
@@ -109,7 +115,7 @@ def main(f):
     print(get_ser_info(100)[50:80])
     print(get_ser_info(100)[50:80])
     # 10000 5秒
-    datas = get_ser_info(100000, csv_writer)
+    datas = get_ser_info(100000, f)
     if len(datas) == 0:
         print('break')
     se.flushInput()
@@ -118,11 +124,11 @@ def main(f):
 
 if __name__ == "__main__":
 
-    file_name = int(input('输入文件名也就是这次的数据集标签 (例如1): '))
-    f = open(f'./data/{file_name:02d}_{get_uuid()}.csv', 'w')
+    # file_name = int(input('输入文件名也就是这次的数据集标签 (例如1): '))
+    f = open(f'./log/{get_now()}_{get_uuid()}.log', 'w')
     try:
         main(f)
-    except Exception as e:
+    except UnicodeDecodeError as e:
         print(e)
     finally:
         f.close()
