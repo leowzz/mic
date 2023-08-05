@@ -8,18 +8,19 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 
-
 class CustomDataset(Dataset):
-    def __init__(self, data, targets):
+    target = []
+    data = []
+    def __init__(self, target, data):
+        self.target = target
         self.data = data
-        self.targets = targets
 
     def __len__(self):
         return len(self.data)
 
     def __getitem__(self, idx):
         x = self.data[idx]
-        y = self.targets[idx]
+        y = self.target
         return x, y
 
 

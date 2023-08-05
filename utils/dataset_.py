@@ -15,6 +15,15 @@ def get_data_names():
         int(_[:2]): f"data/{_}" for _ in files if _.endswith('.csv')
     }
 
+def test_split(dataset):
+    # 划分训练集和测试集
+    train_ratio = 0.8  # 训练集占比
+    n = len(dataset)
+    train_size = int(train_ratio * n)
+    test_size = n - train_size
+    train_data, test_data = torch.utils.data.random_split(dataset, [train_size, test_size])
+    print(f"{train_data=}")
+    print(f"{test_data=}")
 
 def split(keys, values):
     from torch.utils.data import TensorDataset, DataLoader
@@ -34,22 +43,29 @@ def split(keys, values):
     test_loader = DataLoader(TensorDataset(test_data, test_target), batch_size=batch_size, shuffle=False)
 
 
-def deal_1():
-    # 处理最后的脏值
-    import csv
-    for target, file_name in get_data_names().items():
+import csv
+import os
+
+
+def deal_1(base_dir, filenames, output_dir):
+    # 处理最后一行的脏值
+    for file_name in filenames:
+        print(file_name)
+        target = int(file_name[:2])
         print(target, file_name)
         data = []
-        with open(file_name, 'r+', encoding='utf-8') as f:
-            # print(len(f.readlines()))
+        # 读取文件
+        with open(os.path.join(base_dir, file_name), 'r+', encoding='utf-8') as f:
             data.extend(f.readlines())
-            with open(f'{target:03d}.csv', 'w') as f1:
+            # 输出文件
+            with open(os.path.join(output_dir, f'{target:03d}.csv'), 'w') as f1:
                 for i in data[:-1]:
                     f1.write(i)
 
 
-def main(filepath):
+def read_data(filepath):
     data = pd.read_csv(filepath)
+
     # 结果值
     res = []
     # 每段音频
@@ -77,13 +93,15 @@ def main(filepath):
         i += 1
 
     res = [_ for _ in res if 50 < len(_) < 120]
-    print(res[0])
+
+    return res
 
 
 if __name__ == '__main__':
+    ...
     # print(get_data_names())
     # 处理错误值
     # deal_1()
 
-    main('001.csv')
+    # main('001.csv')
     # print(pd.read_csv('01_1b22.csv'))
