@@ -33,7 +33,7 @@ def translate(data):
 
     x_dict = [0, 'AB', 'CD', 'EF', 'GH', 'IJ', 'KL']
     y_dict = [0, '0102', '0304', '0506', '0708', '0910', '1112']
-    print(f'{x_dict[x]}{y_dict[y]}')
+    print(f'({x_dict[x]}, {y_dict[y]})')
     # if data % 6 == 1:
     #     print('1')
 

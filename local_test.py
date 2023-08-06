@@ -48,5 +48,5 @@ csv_files = [_ for _ in os.listdir(DATASET_BASE) if _.endswith('.csv')]
 for c in csv_files:
     data = read_data(os.path.join(DATASET_BASE, c))
     res = [model_test(i) for i in data]
-    res = Counter(res).most_common(1)[0][0]
+    # res = Counter(res).most_common(1)[0][0]
     print(c, res)
